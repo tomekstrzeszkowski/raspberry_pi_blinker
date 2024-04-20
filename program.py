@@ -8,23 +8,7 @@ from button import Button
 
 GPIO.setmode(GPIO.BCM)
 
-
-def persisted_mode():
-    """Return truly value, switch state and save it."""
-    with closing(sqlite3.connect("blinker.db")) as connection:
-        with closing(connection.cursor()) as cursor:
-            current_state = cursor.execute(
-                "SELECT is_night FROM mode"
-            ).fetchall()[0][0] == 1
-            new_state = not current_state
-            cursor.execute(
-                "UPDATE mode SET is_night = ? WHERE is_night = ?",
-                (new_state, current_state)
-            )
-            connection.commit()
-    return current_state
-
-def get_mode():
+def get_mode() -> bool:
     current_state = None
     with closing(sqlite3.connect("blinker.db")) as connection:
         with closing(connection.cursor()) as cursor:
@@ -34,7 +18,7 @@ def get_mode():
             connection.commit()
     return current_state
 
-def set_mode(value):
+def set_mode(value: bool) -> None:
     with closing(sqlite3.connect("blinker.db")) as connection:
         with closing(connection.cursor()) as cursor:
             cursor.execute(
@@ -45,7 +29,7 @@ def set_mode(value):
 
 
 class Blinker:
-    def __init__(self, channel, duration=5, off_duration=None, initial=True):
+    def __init__(self, channel: int, duration: int=5, off_duration: float=None, initial: bool=True):
         if not off_duration:
             off_duration = duration
         self.duration = timedelta(0, duration)
@@ -69,20 +53,20 @@ class Blinker:
             self.cycle = not self.cycle
             self.turn_on(self.cycle)
 
-    def get_state(self, value):
+    def get_state(self, value: bool) -> int:
         return GPIO.HIGH if not value else GPIO.LOW
     
-    def turn_on(self, on=True):
+    def turn_on(self, on: bool=True) -> None:
         GPIO.output(self.channel, self.get_state(on))
         
 
 class PeriodicJob:
     """Change blinker state."""
     
-    def __init__(self, channel, button_channel):
+    def __init__(self, channel: int, button_channel: int):
         self.channel = channel
         self.button_channel = button_channel
-        self.mode = True
+        self.mode: bool = True
         duration, off_duration = 3, 0.1
         if not self.mode:
             duration, off_duration = off_duration, duration
@@ -101,10 +85,10 @@ class PeriodicJob:
             self.blinker.turn_on(False)
             sleep(0.4)
 
-    def reverse_mode(self, value):
+    def reverse_mode(self, value: bool) -> None:
         self.mode = not self.mode
 
-    def tick(self):
+    def tick(self) -> None:
         now = datetime.now()
         if now.minute % 15 == 0 and now.second <=25:
             self.blinker.tick()

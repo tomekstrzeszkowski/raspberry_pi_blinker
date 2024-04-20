@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 
 class Button:
-    def __init__(self, channel, release_callback):
+    def __init__(self, channel: int, release_callback):
         self.channel = channel
         GPIO.setup(self.channel, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         self.is_press = False
@@ -12,26 +12,13 @@ class Button:
         GPIO.add_event_detect(self.channel, GPIO.RISING, callback=self.edge_detected)
         self.callback_for_press = []
         self.callback_for_release = [release_callback]
-        self.last_change = None
-        self.is_last_stable = False
         self.press_time = 0
         self.release_time = 0
 
-    def check_stable_press():
-        #TODO: make it work
-        if not self.last_change:
-            self.last_change = datetime.now().timestamp()
-        now = datetime.now()
-        is_stable = now.timestamp() - self.last_change > 0.8
-        if is_stable:
-            self.is_last_stable = True
-            self.last_change = now
-        return is_stable
-
-    def reset(self):
+    def reset(self) -> None:
         self.is_pressed = False
 
-    def edge_detected(self, value):
+    def edge_detected(self, _value) -> None:
         is_release = GPIO.input(self.channel) == GPIO.HIGH
         if self.is_switch_bounce(is_release):
             return
@@ -44,19 +31,19 @@ class Button:
         except Exception as e:
             print(f"ERROR: {e}")
 
-    def press(self):
+    def press(self) -> None:
         self.is_pressed = False
         self.is_press = True
         for cb in self.callback_for_press:
             cb(self)
 
-    def release(self):
+    def release(self) -> None:
         self.is_pressed = True
         self.is_press = False
         for cb in self.callback_for_release:
             cb(self)
 
-    def is_switch_bounce(self, is_release=True):
+    def is_switch_bounce(self, is_release: bool=True) -> bool:
         """Check if the switch is in a bouncing state within a specific timeframe."""
         now = time()
         if is_release:
