@@ -1,3 +1,11 @@
+# Motivation
+
+In recent years, there has been a significant rise in the usage of digital devices across all age brackets, whether for work or leisure. Various therapeutic and management approaches have been suggested to address this issue, encompassing optical, medical, and ergonomic interventions.
+
+One common recommendation from clinicians is to take regular breaks to reduce digital eye strain. This advice often includes following the 20-20-20 rule, which suggests taking breaks to focus on an object at least 20 feet (6 meters) away for at least 20 seconds every 20 minutes.
+
+This project serves as a reminder to perform these exercises by toggling your external device on and off, ideally accompanied by a light indicator.
+
 # Installation
 
 Install python dependencies, then run python `install.py` script. It will create sql lite database
@@ -15,9 +23,10 @@ python install.py
  - Resistor pack
  - Solderless breadboard
  - Jumper wires
- - Old Phone Charger
+ - Old Phone Charger as a power supply for raspberry
  - Electric Socket and Wires
- - Some plastic elements for cover, I used plexy glass and hot glue 
+ - Some plastic elements for the cover, I used plexy glass and hot glue
+ - External lighting device, I used a LED tape
 
 Circuit diagram:
 
@@ -25,5 +34,7 @@ Circuit diagram:
 
 # Demo
 
-https://github.com/tomekstrzeszkowski/raspberry_pi_blinker/assets/40120335/cf33c9b6-0772-4cc8-9f60-3611933aa845
+
+
+https://github.com/tomekstrzeszkowski/raspberry_pi_blinker/assets/40120335/a0dd9e72-546b-462b-aee1-0c570e7b3836
 
