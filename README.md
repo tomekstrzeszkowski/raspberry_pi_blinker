@@ -36,5 +36,7 @@ Circuit diagram:
 
 
 
-https://github.com/tomekstrzeszkowski/raspberry_pi_blinker/assets/40120335/a0dd9e72-546b-462b-aee1-0c570e7b3836
+https://github.com/tomekstrzeszkowski/raspberry_pi_blinker/assets/40120335/3894c255-9412-4990-88f2-7700c9ee27eb
+
+
 
