@@ -44,7 +44,15 @@ class Button:
             cb(self)
 
     def is_switch_bounce(self, is_release: bool=True) -> bool:
-        """Check if the switch is in a bouncing state within a specific timeframe."""
+        """
+        Check if the switch is in a bouncing state within a specific timeframe.
+        
+        It's also possible to solve that issue by hardware solution. One approach
+        is to add flip-flop or add capacitor to the circuit. 
+        Here is hardware solution: 
+        https://raspberrypi.stackexchange.com/questions/118349/\
+        what-is-the-proper-way-to-debounce-a-gpio-input.
+        """
         now = time()
         if is_release:
             bounce_time = self.release_time
