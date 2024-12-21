@@ -14,6 +14,7 @@ that will be used to persist current state
 ```
 python install.py
 ```
+Append to `.bashrc` code from this repo inside the `.bashrc` file
 # Hardware 
 
 ## Electrical components
@@ -27,6 +28,7 @@ python install.py
  - Electric Socket and Wires
  - Some plastic elements for the cover, I used plexy glass and hot glue
  - External lighting device, I used a LED tape
+ - Light detector dedicated for raspberry or andruino as an optional component
 
 Circuit diagram:
 Channel connections (GPIO, Board):
