@@ -1,28 +1,32 @@
 import RPi.GPIO as GPIO
+from collections import deque
 from datetime import datetime, timedelta
 from time import time
 
 
 class Light:
+    HISTORY_SIZE = 2
     TIME_SWITCH_SECONDS = 60*5
     time_to_switch = timedelta(0, TIME_SWITCH_SECONDS)
     def __init__(self, channel: int):
         self.channel = channel
         GPIO.setup(self.channel, GPIO.IN)
-        self.was_on = self.is_on()
-        self.last_change = datetime.now()
+        self.state = self.is_on()
+        self.last_check = datetime.now()
+        self.history = deque([self.is_on()]*self.HISTORY_SIZE, maxlen=self.HISTORY_SIZE)
 
     def is_on(self) -> bool:
         return GPIO.input(self.channel) == GPIO.LOW
 
     def is_on_for_long_time(self):
-        is_on = self.is_on()
+        state = self.is_on()
         now = datetime.now()
-        state = self.was_on
-        if now > self.last_change + self.time_to_switch and self.was_on != is_on:
-            self.was_on = is_on
-            self.last_change = now
-        return state
+        if all([item is state for item in self.history]):
+            self.state = state
+        if now > self.last_check + self.time_to_switch:
+            self.last_check = now
+            self.history.append(state)
+        return self.state
 
 
 if __name__ == '__main__':
