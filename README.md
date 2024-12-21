@@ -28,7 +28,7 @@ Append to `.bashrc` code from this repo inside the `.bashrc` file
  - Electric Socket and Wires
  - Some plastic elements for the cover, I used plexy glass and hot glue
  - External lighting device, I used a LED tape
- - Light detector dedicated for raspberry or andruino as an optional component
+ - Light sensor dedicated for raspberry or andruino as an optional component
 
 Circuit diagram:
 Channel connections (GPIO, Board):
@@ -42,7 +42,7 @@ Relay:
  - 3V Power, Board 1
  - GND, Board 9
 
-Light detector:
+Light sensor:
  - GPIO 24, Board 22
  - 3V Power, Board 17
  - GND, Board 20
