@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-from time import sleep, time
+from time import time
 from datetime import datetime, timedelta
 
 
@@ -26,10 +26,6 @@ class Button:
             self.release()
         else:
             self.press()
-        try:
-            set_mode(is_release)
-        except Exception as e:
-            print(f"ERROR: {e}")
 
     def press(self) -> None:
         self.is_pressed = False
@@ -61,7 +57,6 @@ class Button:
             bounce_time = self.press_time
             self.press_time = now
         is_bounce = (now - bounce_time) < 0.5
-        print('is_bounce', is_bounce, now - bounce_time)
         return is_bounce
 
 

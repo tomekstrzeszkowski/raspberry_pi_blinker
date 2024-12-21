@@ -29,8 +29,26 @@ python install.py
  - External lighting device, I used a LED tape
 
 Circuit diagram:
+Channel connections (GPIO, Board):
 
+Button:
+ - GPIO 23, Board 16
+ - GND, Board 14
+
+Relay:
+ - GPIO 2, Board 2
+ - 3V Power, Board 1
+ - GND, Board 9
+
+Light detector:
+ - GPIO 24, Board 22
+ - 3V Power, Board 17
+ - GND, Board 20
+
+Version with relay and button:
 ![raspberry-pi-zero-5](https://github.com/tomekstrzeszkowski/raspberry_pi_blinker/assets/40120335/d6e8e9a6-460b-4b76-8fe5-7d1bba4f82ce)
+
+
 
 # Demo
 

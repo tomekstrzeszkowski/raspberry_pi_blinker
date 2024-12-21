@@ -1,35 +1,16 @@
 import RPi.GPIO as GPIO
 from time import sleep
 from datetime import datetime, timedelta
-import random
-from contextlib import closing
-import sqlite3
 from button import Button
+from detector import Light
 
 GPIO.setmode(GPIO.BCM)
 
-def get_mode() -> bool:
-    current_state = None
-    with closing(sqlite3.connect("blinker.db")) as connection:
-        with closing(connection.cursor()) as cursor:
-            current_state = cursor.execute(
-                "SELECT is_night FROM mode"
-            ).fetchall()[0][0] == 1
-            connection.commit()
-    return current_state
-
-def set_mode(value: bool) -> None:
-    with closing(sqlite3.connect("blinker.db")) as connection:
-        with closing(connection.cursor()) as cursor:
-            cursor.execute(
-                "UPDATE mode SET is_night = ?",
-                (value,)
-            )
-            connection.commit()
-
 
 class Blinker:
-    def __init__(self, channel: int, duration: int=5, off_duration: float=None, initial: bool=True):
+    def __init__(
+        self, channel: int, duration: int=5, off_duration: float=None, initial: bool=True
+    ):
         if not off_duration:
             off_duration = duration
         self.duration = timedelta(0, duration)
@@ -63,22 +44,24 @@ class Blinker:
 class PeriodicJob:
     """Change blinker state."""
     
-    def __init__(self, channel: int, button_channel: int):
+    def __init__(self, channel: int, button_channel: int, detector_channel: int = 0):
         self.channel = channel
         self.button_channel = button_channel
         self.mode: bool = True
         duration, off_duration = 3, 0.1
         if not self.mode:
             duration, off_duration = off_duration, duration
-        initial = None
-        try:
-            initial = get_mode()
-        except Exception as e:
-            print(f"ERROR: {e}")
-        if initial is None:
-            initial = True
-        self.blinker = Blinker(channel, duration=duration, off_duration=off_duration, initial=initial)
+        self.light = Light(detector_channel)
+        initial = not self.light.is_on_for_long_time()
+        self.blinker = Blinker(
+            channel, duration=duration, off_duration=off_duration, initial=initial
+        )
         self.button = Button(button_channel, self.reverse_mode)
+        self.welcome()
+        self.block_light_detector = False  # block light detecter when button was used
+
+    def welcome(self):
+        print("Welcom message.")
         for _ in range(2):
             self.blinker.turn_on(True)
             sleep(0.4)
@@ -86,25 +69,30 @@ class PeriodicJob:
             sleep(0.4)
 
     def reverse_mode(self, value: bool) -> None:
+        print(f'button {self.mode}')
         self.mode = not self.mode
+        self.block_light_detector = True
 
     def tick(self) -> None:
         now = datetime.now()
         if now.minute % 15 == 0 and now.second <=25:
             self.blinker.tick()
         else:
+            if not self.block_light_detector:
+                self.mode = not self.light.is_on_for_long_time()
             self.blinker.turn_on(self.mode)
 
 
-job = PeriodicJob(channel=2, button_channel=23)
+job = PeriodicJob(
+    channel=2, 
+    button_channel=23, 
+    detector_channel=24,
+)
 
-#pin is now outputting LOW by default
 if __name__ == '__main__':
     try:
         while True:
             job.tick()
     finally:
         GPIO.cleanup()
-
-
 
