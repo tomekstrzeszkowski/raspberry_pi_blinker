@@ -8,7 +8,7 @@ This project serves as a reminder to perform these exercises by toggling your ex
 
 # Installation
 
-Install python dependencies from the readme.txt.
+Install python dependencies from the requirements.txt.
 Append content from `.bashrc.tail.example` to `.bashrc`.
 Optional: run python `install.py` script. It will create sql lite database
 that will be used to persist current state (not used in current version)
