@@ -19,13 +19,13 @@ class Light:
         return GPIO.input(self.channel) == GPIO.LOW
 
     def detect(self):
+        if now < self.last_check + self.time_to_switch:
+            return self.state
         state = self.is_on()
-        now = datetime.now()
+        self.last_check = datetime.now()
         if all([item is state for item in self.history]):
             self.state = state
-        if now > self.last_check + self.time_to_switch:
-            self.last_check = now
-            self.history.append(state)
+        self.history.append(state)
         return self.state
 
 
