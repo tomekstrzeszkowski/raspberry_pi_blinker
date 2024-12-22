@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 from time import sleep
 from datetime import datetime, timedelta
 from button import Button
-from detector import Light
+from sensor import Light
 
 GPIO.setmode(GPIO.BCM)
 
@@ -44,21 +44,21 @@ class Blinker:
 class PeriodicJob:
     """Change blinker state."""
     
-    def __init__(self, channel: int, button_channel: int, detector_channel: int = 0):
+    def __init__(self, channel: int, button_channel: int, sensor_channel: int = 0):
         self.channel = channel
         self.button_channel = button_channel
         self.mode: bool = True
         duration, off_duration = 3, 0.1
         if not self.mode:
             duration, off_duration = off_duration, duration
-        self.light = Light(detector_channel)
-        initial = not self.light.is_on_for_long_time()
+        self.light = Light(sensor_channel)
+        initial = not self.light.detect()
         self.blinker = Blinker(
             channel, duration=duration, off_duration=off_duration, initial=initial
         )
         self.button = Button(button_channel, self.reverse_mode)
         self.welcome()
-        self.block_light_detector = False  # block light detecter when button was used
+        self.block_light_sensor = False  # block light detecter when button was used
 
     def welcome(self):
         print("Welcom message.")
@@ -69,24 +69,23 @@ class PeriodicJob:
             sleep(0.4)
 
     def reverse_mode(self, value: bool) -> None:
-        print(f'button {self.mode}')
         self.mode = not self.mode
-        self.block_light_detector = True
+        self.block_light_sensor = True
 
     def tick(self) -> None:
         now = datetime.now()
         if now.minute % 15 == 0 and now.second <=25:
             self.blinker.tick()
         else:
-            if not self.block_light_detector:
-                self.mode = not self.light.is_on_for_long_time()
+            if not self.block_light_sensor:
+                self.mode = not self.light.detect()
             self.blinker.turn_on(self.mode)
 
 
 job = PeriodicJob(
     channel=2, 
     button_channel=23, 
-    detector_channel=24,
+    sensor_channel=24,
 )
 
 if __name__ == '__main__':

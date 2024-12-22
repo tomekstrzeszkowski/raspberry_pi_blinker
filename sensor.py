@@ -18,7 +18,7 @@ class Light:
     def is_on(self) -> bool:
         return GPIO.input(self.channel) == GPIO.LOW
 
-    def is_on_for_long_time(self):
+    def detect(self):
         state = self.is_on()
         now = datetime.now()
         if all([item is state for item in self.history]):

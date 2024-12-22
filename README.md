@@ -8,13 +8,14 @@ This project serves as a reminder to perform these exercises by toggling your ex
 
 # Installation
 
-Install python dependencies, then run python `install.py` script. It will create sql lite database
-that will be used to persist current state
+Install python dependencies from the readme.txt.
+Append content from `.bashrc.tail.example` to `.bashrc`.
+Optional: run python `install.py` script. It will create sql lite database
+that will be used to persist current state (not used in current version)
 
 ```
 python install.py
 ```
-Append to `.bashrc` code from this repo inside the `.bashrc` file
 # Hardware 
 
 ## Electrical components
